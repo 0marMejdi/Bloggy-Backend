@@ -1,74 +1,315 @@
-<!DOCTYPE html>
-<html lang="en">
+<html><head><meta name="color-scheme" content="light dark"><link rel="icon" href="chrome-extension://ckkdlimhmcjmikdlpkmbgfkaikojcbjk/icons/default/16x16.png"></head><body class="_theme-github-dark _color-dark"><link rel="stylesheet" type="text/css" href="chrome-extension://ckkdlimhmcjmikdlpkmbgfkaikojcbjk/themes/github-dark.css" id="_theme"><link rel="stylesheet" type="text/css" href="chrome-extension://ckkdlimhmcjmikdlpkmbgfkaikojcbjk/vendor/prism-okaidia.min.css" id="_prism"><div id="_html" class="markdown-body _width-large" style="visibility: visible;"><h1 id="usage" tabindex="-1"><a class="anchor" name="usage" tabindex="-1" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+  <h2 id="authentication" tabindex="-1"><a class="anchor" name="authentication" tabindex="-1" href="#authentication"><span class="octicon octicon-link"></span></a>Authentication</h2>
+  <p><post> POST </post> : <code>/auth/register</code> Registers a new User.</p>
+  <p><em>Request Body</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"email"</span><span class="token operator">:</span><span class="token string">"werner.heisenberg@gmail.com"</span><span class="token punctuation">,</span><span class="token comment">//! unique</span>
+    <span class="token property">"password"</span><span class="token operator">:</span><span class="token string">"freedom"</span><span class="token punctuation">,</span>
+    <span class="token property">"username"</span><span class="token operator">:</span><span class="token string">"heisen"</span><span class="token punctuation">,</span> <span class="token comment">//! unique</span>
+    <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"Werner"</span><span class="token punctuation">,</span> <span class="token comment">//optional</span>
+    <span class="token property">"lastName"</span><span class="token operator">:</span><span class="token string">"Heisenberg"</span><span class="token punctuation">,</span> <span class="token comment">//optional</span>
+    <span class="token property">"bio"</span><span class="token operator">:</span><span class="token string">"German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct  competition with the Manhattan Project"</span> <span class="token comment">//optional</span>
+  <span class="token punctuation">}</span> 
+  </code></pre>
+  <p><em>Response Body</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"Authorization"</span><span class="token operator">:</span> <span class="token string">"eyJhbGciOiJIUzI...."</span>
+  <span class="token punctuation">}</span>
+  
+  </code></pre>
+  <hr>
+  <p><post> POST </post> : <code>/auth/login</code> Log in to existent account.</p>
+  <p><em>Request Body</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"email"</span><span class="token operator">:</span><span class="token string">"werner.heisenberg@gmail.com"</span><span class="token punctuation">,</span>
+    <span class="token property">"password"</span><span class="token operator">:</span><span class="token string">"freedom"</span>
+  <span class="token punctuation">}</span>
+  
+  </code></pre>
+  <p><em>Response Body</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"Authorization"</span><span class="token operator">:</span> <span class="token string">"eyJhbGciOiJIUzI1NiI..."</span>
+  <span class="token punctuation">}</span>
+  
+  </code></pre>
+  <h2 id="users-management" tabindex="-1"><a class="anchor" name="users-management" tabindex="-1" href="#users-management"><span class="octicon octicon-link"></span></a>Users Management</h2>
+  <p><get> GET </get> : <code>/users/infos</code>  Retrieves the information of the currently authenticated user.</p>
+  <p><em>Response Body</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"werner.heisenberg@gmail.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Werner"</span><span class="token punctuation">,</span>
+      <span class="token property">"lastName"</span><span class="token operator">:</span> <span class="token string">"Heisenberg"</span><span class="token punctuation">,</span>
+      <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"heisen"</span><span class="token punctuation">,</span>
+      <span class="token property">"bio"</span><span class="token operator">:</span> <span class="token string">"German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct competition with the Manhattan Project"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"6792d03f6ead5323be1a6fa4"</span>
+  <span class="token punctuation">}</span>
+  
+  </code></pre>
+  <hr>
+  <p><patch> PATCH </patch> : <code>/users/infos</code> Updates the information of the currently authenticated user.</p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"new name"</span><span class="token punctuation">,</span>
+    <span class="token property">"lastName"</span><span class="token operator">:</span><span class="token string">"new lastName"</span><span class="token punctuation">,</span>
+    <span class="token property">"bio"</span><span class="token operator">:</span><span class="token string">"new biooo"</span>
+  <span class="token punctuation">}</span>
+  
+  </code></pre>
+  <hr>
+  <p><patch> PATCH </patch> : <code>/users/infos/password</code> Changes the password of the currently authenticated user.</p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"oldPassword"</span><span class="token operator">:</span> <span class="token string">"currentPassword"</span><span class="token punctuation">,</span>
+    <span class="token property">"newPassword"</span><span class="token operator">:</span> <span class="token string">"newPassword"</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><get> GET </get> : <code>/users/email/{email}</code> Finds a user by email address. Replace <code>{email}</code> with the user's email.</p>
+  <hr>
+  <p><get> GET </get> : <code>/users</code> Retrieves a list of all users.</p>
+  <p><strong>Query Parameter:</strong><br>
+  <code>transform</code> (optional): Boolean to decide transformation logic.</p>
+  <hr>
+  <p><get> GET </get> : <code>/users/{id}</code> Finds a user by ID. Replace <code>{id}</code> with the user's ID.</p>
+  <hr>
+  <p><patch> PATCH </patch> : <code>/users/{id}</code> Updates a user by ID. Replace <code>{id}</code> with the user's ID.<br>
+  <strong>Request Body:</strong></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"new name"</span><span class="token punctuation">,</span>
+    <span class="token property">"lastName"</span><span class="token operator">:</span><span class="token string">"new lastName"</span><span class="token punctuation">,</span>
+    <span class="token property">"bio"</span><span class="token operator">:</span><span class="token string">"new biooo"</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><delete> DELETE </delete> :  <code>/users/{id}</code> Removes a user by ID. Replace <code>{id}</code> with the user's ID.</p>
+  <h2 id="article-api-endpoints" tabindex="-1"><a class="anchor" name="article-api-endpoints" tabindex="-1" href="#article-api-endpoints"><span class="octicon octicon-link"></span></a>Article API Endpoints</h2>
+  <p><get> GET </get>: <code>/article</code> Retrieves all articles.</p>
+  <hr>
+  <p><get> GET </get> : <code>/article/:id</code> Retrieves an article by its ID.</p>
+  <hr>
+  <p><get> GET </get> : <code>/article/full</code> Fetches All Standalone articles with their nested comments</p>
+  <hr>
+  <p><get> GET </get> : <code>/article/full/{id}</code> Fetches an article (or comment) with its nested comments.</p>
+  <hr>
+  <p><post> POST </post>: <code>/article/create/</code> Creates a new article or a comment, with multiple image uploads. If the article is a comment on another article, provide the <code>fatherId</code> field with the ID of the parent article. Otherwise, set <code>fatherId</code> to <code>null</code> for standalone posts.</p>
+  <p><em>Multipart/form-data</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"Article title"</span><span class="token punctuation">,</span>
+      <span class="token property">"content"</span><span class="token operator">:</span> <span class="token string">"Article content"</span><span class="token punctuation">,</span>
+      <span class="token property">"fatherId"</span><span class="token operator">:</span> <span class="token string">"ParentArticleId or null"</span><span class="token punctuation">,</span>
+      <span class="token property">"slug"</span><span class="token operator">:</span> <span class="token string">"optional-slug"</span><span class="token punctuation">,</span>
+      <span class="token property">"owner"</span><span class="token operator">:</span> <span class="token string">"OwnerId"</span><span class="token punctuation">,</span>
+      <span class="token property">"images"</span><span class="token operator">:</span> <span class="token punctuation">[</span>ArrayOfImages<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><post> POST </post> : <code>/article/:id/upvote</code> Upvotes an article.</p>
+  <hr>
+  <p><post> POST </post> : <code>/article/:id/downvote</code> Downvotes an article</p>
+  <hr>
+  <p><put> PUT </put>: <code>/article/:id/image/change/:index?</code> Changes an article's image by its index (default is <code>0</code>).</p>
+  <p><em>Multipart/form-data</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"image"</span><span class="token operator">:</span> <span class="token punctuation">[</span>TheImage<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><delete> DELETE </delete>: <code>/article/:id/image/delete/:index?</code> Deletes an article's image by its index (default is <code>0</code>).</p>
+  <hr>
+  <p><post> POST </post>: <code>/article/:id/image/add</code> Adds a new image to the specified article.</p>
+  <p><em>Multipart/form-data</em></p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+      <span class="token property">"image"</span><span class="token operator">:</span> <span class="token punctuation">[</span>TheImage<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><get> GET </get>: <code>/article/property</code> Retrieves all articles created by the currently authenticated user.</p>
+  <hr>
+  <p><get> GET </get>: <code>/article/owner/:id</code> Retrieves the owner of a specified articl.</p>
+  <hr>
+  <p><patch> PATCH </patch>: <code>/article/:id</code> Updates an article by its ID.</p>
+  <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"Updated title"</span><span class="token punctuation">,</span>
+    <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Updated description"</span><span class="token punctuation">,</span>
+    <span class="token property">"content"</span><span class="token operator">:</span> <span class="token string">"Updated content"</span>
+  <span class="token punctuation">}</span>
+  </code></pre>
+  <hr>
+  <p><delete> DELETE </delete>: <code>/article/:id</code> Deletes an article by its ID.</p>
+  <hr>
+  <p><get> GET </get> : <code>/article/search/:name</code> Searches for articles by their name.</p>
+  <hr>
+  <h2 id="description" tabindex="-1"><a class="anchor" name="description" tabindex="-1" href="#description"><span class="octicon octicon-link"></span></a>Description</h2>
+  <p><a href="https://github.com/nestjs/nest">Nest</a> framework TypeScript starter repository.</p>
+  <h2 id="installation" tabindex="-1"><a class="anchor" name="installation" tabindex="-1" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+  <pre class="language-bash" tabindex="0"><code class="language-bash">$ <span class="token function">npm</span> <span class="token function">install</span>
+  </code></pre>
+  <h2 id="running-the-app" tabindex="-1"><a class="anchor" name="running-the-app" tabindex="-1" href="#running-the-app"><span class="octicon octicon-link"></span></a>Running the app</h2>
+  <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token comment"># development</span>
+  $ <span class="token function">npm</span> run start
+  
+  <span class="token comment"># watch mode</span>
+  $ <span class="token function">npm</span> run start:dev
+  
+  <span class="token comment"># production mode</span>
+  $ <span class="token function">npm</span> run start:prod
+  </code></pre>
+  <h2 id="test" tabindex="-1"><a class="anchor" name="test" tabindex="-1" href="#test"><span class="octicon octicon-link"></span></a>Test</h2>
+  <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token comment"># unit tests</span>
+  $ <span class="token function">npm</span> run <span class="token builtin class-name">test</span>
+  
+  <span class="token comment"># e2e tests</span>
+  $ <span class="token function">npm</span> run test:e2e
+  
+  <span class="token comment"># test coverage</span>
+  $ <span class="token function">npm</span> run test:cov
+  </code></pre>
+  <h2 id="support" tabindex="-1"><a class="anchor" name="support" tabindex="-1" href="#support"><span class="octicon octicon-link"></span></a>Support</h2>
+  <p>Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If<br>
+  you'd like to join them, please <a href="https://docs.nestjs.com/support">read more here</a>.</p>
+  <h2 id="stay-in-touch" tabindex="-1"><a class="anchor" name="stay-in-touch" tabindex="-1" href="#stay-in-touch"><span class="octicon octicon-link"></span></a>Stay in touch</h2>
+  <ul>
+  <li>Author - <a href="https://kamilmysliwiec.com">Kamil Myśliwiec</a></li>
+  <li>Website - <a href="https://nestjs.com/">https://nestjs.com</a></li>
+  <li>Twitter - <a href="https://twitter.com/nestframework">@nestframework</a></li>
+  </ul>
+  <h2 id="license" tabindex="-1"><a class="anchor" name="license" tabindex="-1" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+  <p>Nest is <a href="LICENSE">MIT licensed</a>.</p>
+  <style>
+  get { 
+   
+    background-color :rgb(1, 71, 55) ;
+    border-color : rgb(229, 231, 235);
+    border-radius : 4px;
+    color:  rgb(132, 225, 188);
+    border-style: solid;  
+    border-width : 0px;
+    
+    padding-right: 3px;
+    padding-left: 3px;
+  
+    }
+  post { 
+   
+    background-color :rgb(99, 49, 18);
+    border-color : rgb(229, 231, 235);
+    border-radius : 4px;
+    color:  rgb(250, 202, 21) ;
+    border-style: solid;  
+    border-width : 0px;
+    
+    padding-right: 3px;
+    padding-left: 3px;
+  
+    }
+  patch { 
+   
+    background-color :rgb(35, 56, 118) ;
+    border-color : rgb(229, 231, 235);
+    border-radius : 4px;
+    color:  rgb(164, 202, 254);
+    border-style: solid;  
+    border-width : 0px;
+    
+    padding-right: 3px;
+    padding-left: 3px;
+  
+    }
+  
+  delete { 
+   
+    background-color :rgb(119, 29, 29) ;
+    border-color : rgb(229, 231, 235);
+    border-radius : 4px;
+    color:  rgb(248, 180, 180);
+    border-style: solid;  
+    border-width : 0px;
+    
+    padding-right: 3px;
+    padding-left: 3px;
+  
+    }
+  put{ 
+   
+    background-color :rgb(74, 29, 150) ;
+    border-color : rgb(229, 231, 235);
+    border-radius : 4px;
+    color:  rgb(202, 191, 253);
+    border-width : 0px;
+    
+    padding-right: 3px;
+    padding-left: 3px;
+  
+    }
+  </style>
+  </div></body></html>
+<style>
+.markdown-body{color-scheme:dark;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;margin:0;color:#e6edf3;background-color:#0d1117;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";font-size:16px;line-height:1.5;word-wrap:break-word}.markdown-body h1:hover .anchor .octicon-link:before,.markdown-body h2:hover .anchor .octicon-link:before,.markdown-body h3:hover .anchor .octicon-link:before,.markdown-body h4:hover .anchor .octicon-link:before,.markdown-body h5:hover .anchor .octicon-link:before,.markdown-body h6:hover .anchor .octicon-link:before{width:16px;height:16px;content:" ";display:inline-block;background-color:currentColor;-webkit-mask-image:url("chrome-extension://__MSG_@@extension_id__/content/anchor.svg");mask-image:url("chrome-extension://__MSG_@@extension_id__/content/anchor.svg")}.markdown-body details,.markdown-body figcaption,.markdown-body figure{display:block}.markdown-body summary{display:list-item}.markdown-body [hidden]{display:none!important}.markdown-body a{background-color:transparent;color:#2f81f7;text-decoration:none}.markdown-body abbr[title]{border-bottom:none;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}.markdown-body b,.markdown-body strong,.markdown-body table th{font-weight:600}.markdown-body dfn{font-style:italic}.markdown-body h1{padding-bottom:.3em;font-size:2em;border-bottom:1px solid #21262d}.markdown-body mark{background-color:rgba(187,128,9,.15);color:#e6edf3}.markdown-body small{font-size:90%}.markdown-body sub,.markdown-body sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}.markdown-body sub{bottom:-.25em}.markdown-body sup{top:-.5em}.markdown-body img{border-style:none;max-width:100%;box-sizing:content-box;background-color:#0d1117}.markdown-body figure{margin:1em 40px}.markdown-body hr{box-sizing:content-box;overflow:hidden;background:0 0;height:.25em;padding:0;margin:24px 0;background-color:#30363d;border:0}.markdown-body input{font:inherit;margin:0;overflow:visible;font-family:inherit;font-size:inherit;line-height:inherit}.markdown-body [type=button],.markdown-body [type=reset],.markdown-body [type=submit]{-webkit-appearance:button;appearance:button}.markdown-body [type=checkbox],.markdown-body [type=radio]{box-sizing:border-box;padding:0}.markdown-body [type=number]::-webkit-inner-spin-button,.markdown-body [type=number]::-webkit-outer-spin-button{height:auto}.markdown-body [type=search]::-webkit-search-cancel-button,.markdown-body [type=search]::-webkit-search-decoration{-webkit-appearance:none;appearance:none}.markdown-body ::-webkit-input-placeholder{color:inherit;opacity:.54}.markdown-body ::-webkit-file-upload-button{-webkit-appearance:button;appearance:button;font:inherit}.markdown-body a:hover{text-decoration:underline}.markdown-body ::placeholder{color:#6e7681;opacity:1}.markdown-body hr::before,.markdown-body::before{display:table;content:""}.markdown-body hr::after,.markdown-body::after{display:table;clear:both;content:""}.markdown-body table{border-spacing:0;border-collapse:collapse;display:block;width:max-content;max-width:100%;overflow:auto}.markdown-body td,.markdown-body th{padding:0}.markdown-body .task-list-item.enabled label,.markdown-body details summary{cursor:pointer}.markdown-body details:not([open])>:not(summary){display:none!important}.markdown-body [role=button]:focus,.markdown-body a:focus,.markdown-body input[type=checkbox]:focus,.markdown-body input[type=radio]:focus{outline:2px solid #2f81f7;outline-offset:-2px;box-shadow:none}.markdown-body [role=button]:focus:not(:focus-visible),.markdown-body a:focus:not(:focus-visible),.markdown-body input[type=checkbox]:focus:not(:focus-visible),.markdown-body input[type=radio]:focus:not(:focus-visible){outline:solid 1px transparent}.markdown-body [role=button]:focus-visible,.markdown-body a:focus-visible,.markdown-body input[type=checkbox]:focus-visible,.markdown-body input[type=radio]:focus-visible{outline:2px solid #2f81f7;outline-offset:-2px;box-shadow:none}.markdown-body a:not([class]):focus,.markdown-body a:not([class]):focus-visible,.markdown-body input[type=checkbox]:focus,.markdown-body input[type=checkbox]:focus-visible,.markdown-body input[type=radio]:focus,.markdown-body input[type=radio]:focus-visible{outline-offset:0}.markdown-body kbd{display:inline-block;padding:3px 5px;font:11px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;line-height:10px;color:#e6edf3;vertical-align:middle;background-color:#161b22;border:solid 1px rgba(110,118,129,.4);border-bottom-color:rgba(110,118,129,.4);border-radius:6px;box-shadow:inset 0-1px 0 rgba(110,118,129,.4)}.markdown-body h1{margin:24px 0 16px;font-weight:600;line-height:1.25}.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:24px;margin-bottom:16px;line-height:1.25}.markdown-body h2{font-weight:600;padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #21262d}.markdown-body h3{font-weight:600;font-size:1.25em}.markdown-body h4{font-weight:600;font-size:1em}.markdown-body h5{font-weight:600;font-size:.875em}.markdown-body h6{font-weight:600;font-size:.85em;color:#848d97}.markdown-body blockquote{padding:0 1em;color:#848d97;border-left:.25em solid #30363d}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol ol,.markdown-body ul ol{list-style-type:lower-roman}.markdown-body ol ol ol,.markdown-body ol ul ol,.markdown-body ul ol ol,.markdown-body ul ul ol{list-style-type:lower-alpha}.markdown-body dd{margin-left:0}.markdown-body code,.markdown-body pre,.markdown-body samp,.markdown-body tt{font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace}.markdown-body pre{word-wrap:normal}.markdown-body .octicon{display:inline-block;overflow:visible!important;vertical-align:text-bottom;fill:currentColor}.markdown-body input::-webkit-inner-spin-button,.markdown-body input::-webkit-outer-spin-button{margin:0;-webkit-appearance:none;appearance:none}.markdown-body .mr-2{margin-right:8px!important}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .absent{color:#f85149}.markdown-body .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}.markdown-body .anchor:focus{outline:0}.markdown-body details,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-top:0;margin-bottom:16px}.markdown-body blockquote{margin:0 0 16px}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#e6edf3;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt{padding:0 .2em;font-size:inherit}.markdown-body summary h1,.markdown-body summary h2,.markdown-body summary h3,.markdown-body summary h4,.markdown-body summary h5,.markdown-body summary h6{display:inline-block}.markdown-body summary h1 .anchor,.markdown-body summary h2 .anchor,.markdown-body summary h3 .anchor,.markdown-body summary h4 .anchor,.markdown-body summary h5 .anchor,.markdown-body summary h6 .anchor{margin-left:-40px}.markdown-body summary h1,.markdown-body summary h2{padding-bottom:0;border-bottom:0}.markdown-body ol.no-list,.markdown-body ul.no-list{padding:0;list-style-type:none}.markdown-body ol[type="a s"]{list-style-type:lower-alpha}.markdown-body ol[type="A s"]{list-style-type:upper-alpha}.markdown-body ol[type="i s"]{list-style-type:lower-roman}.markdown-body ol[type="I s"]{list-style-type:upper-roman}.markdown-body ol[type="1"]{list-style-type:decimal}.markdown-body div>ol:not([type]){list-style-type:decimal}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li>p{margin-top:16px}.markdown-body li+li{margin-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:600}.markdown-body dl dd{padding:0 16px;margin-bottom:16px}.markdown-body table td,.markdown-body table th{padding:6px 13px;border:1px solid #30363d}.markdown-body table td>:last-child{margin-bottom:0}.markdown-body table tr{background-color:#0d1117;border-top:1px solid #21262d}.markdown-body table tr:nth-child(2n){background-color:#161b22}.markdown-body .emoji,.markdown-body table img{background-color:transparent}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body .emoji{max-width:none;vertical-align:text-top}.markdown-body span.frame{display:block;overflow:hidden}.markdown-body span.frame>span{display:block;float:left;width:auto;padding:7px;margin:13px 0 0;overflow:hidden;border:1px solid #30363d}.markdown-body span.frame span img{display:block;float:left}.markdown-body span.frame span span{display:block;padding:5px 0 0;clear:both;color:#e6edf3}.markdown-body span.align-center,.markdown-body span.align-right{display:block;overflow:hidden;clear:both}.markdown-body span.align-center>span{display:block;margin:13px auto 0;overflow:hidden;text-align:center}.markdown-body span.align-center span img{margin:0 auto;text-align:center}.markdown-body span.align-right>span{display:block;margin:13px 0 0;overflow:hidden;text-align:right}.markdown-body span.align-right span img{margin:0;text-align:right}.markdown-body span.float-left{display:block;float:left;margin-right:13px;overflow:hidden}.markdown-body span.float-left span{margin:13px 0 0}.markdown-body span.float-right{display:block;float:right;margin-left:13px;overflow:hidden}.markdown-body span.float-right>span{display:block;margin:13px auto 0;overflow:hidden;text-align:right}.markdown-body code,.markdown-body tt{padding:.2em .4em;margin:0;font-size:85%;white-space:break-spaces;background-color:rgba(110,118,129,.4);border-radius:6px}.markdown-body code br,.markdown-body tt br{display:none}.markdown-body del code{text-decoration:inherit}.markdown-body samp{font-size:85%}.markdown-body pre code{font-size:100%}.markdown-body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}.markdown-body .highlight{margin-bottom:16px}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{padding:16px;overflow:auto;font-size:85%;line-height:1.45;color:#e6edf3;background-color:#161b22;border-radius:6px}.markdown-body pre code,.markdown-body pre tt{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}.markdown-body .csv-data td,.markdown-body .csv-data th{padding:5px;overflow:hidden;font-size:12px;line-height:1;text-align:left;white-space:nowrap}.markdown-body .csv-data .blob-num{padding:10px 8px 9px;text-align:right;background:#0d1117;border:0}.markdown-body .csv-data tr{border-top:0}.markdown-body .csv-data th{font-weight:600;background:#161b22;border-top:0}.markdown-body [data-footnote-ref]::before{content:"["}.markdown-body [data-footnote-ref]::after{content:"]"}.markdown-body .footnotes{font-size:12px;color:#848d97;border-top:1px solid #30363d}.markdown-body .footnotes ol{padding-left:16px}.markdown-body .footnotes ol ul{display:inline-block;padding-left:16px;margin-top:16px}.markdown-body .footnotes li{position:relative}.markdown-body .footnotes li:target::before{position:absolute;top:-8px;right:-8px;bottom:-8px;left:-24px;pointer-events:none;content:"";border:2px solid #1f6feb;border-radius:6px}.markdown-body .footnotes li:target{color:#e6edf3}.markdown-body .footnotes .data-footnote-backref g-emoji{font-family:monospace}.markdown-body .pl-c{color:#8b949e}.markdown-body .pl-c1,.markdown-body .pl-s .pl-v{color:#79c0ff}.markdown-body .pl-e,.markdown-body .pl-en{color:#d2a8ff}.markdown-body .pl-s .pl-s1,.markdown-body .pl-smi{color:#c9d1d9}.markdown-body .pl-ent{color:#7ee787}.markdown-body .pl-k{color:#ff7b72}.markdown-body .pl-pds,.markdown-body .pl-s,.markdown-body .pl-s .pl-pse .pl-s1,.markdown-body .pl-sr,.markdown-body .pl-sr .pl-sra,.markdown-body .pl-sr .pl-sre{color:#a5d6ff}.markdown-body .pl-smw,.markdown-body .pl-v{color:#ffa657}.markdown-body .pl-bu{color:#f85149}.markdown-body .pl-ii{color:#f0f6fc;background-color:#8e1519}.markdown-body .pl-c2{color:#f0f6fc;background-color:#b62324}.markdown-body .pl-sr .pl-cce{font-weight:700;color:#7ee787}.markdown-body .pl-ml{color:#f2cc60}.markdown-body .pl-mh,.markdown-body .pl-mh .pl-en,.markdown-body .pl-ms{font-weight:700;color:#1f6feb}.markdown-body .pl-mi{font-style:italic;color:#c9d1d9}.markdown-body .pl-mb{font-weight:700;color:#c9d1d9}.markdown-body .pl-md{color:#ffdcd7;background-color:#67060c}.markdown-body .pl-mi1{color:#aff5b4;background-color:#033a16}.markdown-body .pl-mc{color:#ffdfb6;background-color:#5a1e02}.markdown-body .pl-mi2{color:#c9d1d9;background-color:#1158c7}.markdown-body .pl-mdr{font-weight:700;color:#d2a8ff}.markdown-body .pl-ba{color:#8b949e}.markdown-body .pl-sg{color:#484f58}.markdown-body .pl-corl{text-decoration:underline;color:#a5d6ff}.markdown-body g-emoji{display:inline-block;min-width:1ch;font-family:"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size:1em;font-style:normal!important;font-weight:400;line-height:1;vertical-align:-.075em}.markdown-body g-emoji img{width:1em;height:1em}.markdown-body .task-list-item{list-style-type:none}.markdown-body .task-list-item label{font-weight:400}.markdown-body .task-list-item+.task-list-item{margin-top:4px}.markdown-body .task-list-item .handle{display:none}.markdown-body .task-list-item-checkbox{margin:0 .2em .25em -1.4em;vertical-align:middle}.markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox{margin:0-1.6em .25em .2em}.markdown-body .contains-task-list{position:relative}.markdown-body .contains-task-list:focus-within .task-list-item-convert-container,.markdown-body .contains-task-list:hover .task-list-item-convert-container{display:block;width:auto;height:24px;overflow:visible;clip:auto}.markdown-body ::-webkit-calendar-picker-indicator{filter:invert(50%)}.markdown-body .markdown-alert{padding:8px 16px;margin-bottom:16px;color:inherit;border-left:.25em solid #30363d}.markdown-body .markdown-alert>:first-child{margin-top:0}.markdown-body .markdown-alert>:last-child{margin-bottom:0}.markdown-body .markdown-alert .markdown-alert-title{display:flex;font-weight:500;align-items:center;line-height:1}.markdown-body .markdown-alert.markdown-alert-note{border-left-color:#1f6feb}.markdown-body .markdown-alert.markdown-alert-note .markdown-alert-title{color:#2f81f7}.markdown-body .markdown-alert.markdown-alert-important{border-left-color:#8957e5}.markdown-body .markdown-alert.markdown-alert-important .markdown-alert-title{color:#a371f7}.markdown-body .markdown-alert.markdown-alert-warning{border-left-color:#9e6a03}.markdown-body .markdown-alert.markdown-alert-warning .markdown-alert-title{color:#d29922}.markdown-body .markdown-alert.markdown-alert-tip{border-left-color:#238636}.markdown-body .markdown-alert.markdown-alert-tip .markdown-alert-title{color:#3fb950}.markdown-body .markdown-alert.markdown-alert-caution{border-left-color:#da3633}.markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title{color:#f85149}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Api Documentation - Resume Builder Server</title>
-    <style>
-        /* Custom CSS */
-        @media (max-width: 513px) {
-            .custom-padding {
-                padding: 0 !important;
-            }
-            .custom-margin {
-                margin: 0 !important;
-            }
-        }
-        /* Dark theme styles */
-        .response {
-        background-color: #27ae60;
-        color: white;
-}
-        .code {
-            background-color: #282c34; /* dark background color */
-            color: #abb2bf; /* light text color */
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: auto;
-        }
 
-        /* JSON specific syntax highlighting */
-        .property {
-            color: #61afef; /* blue */
-        }
-        .string {
-            color: #98c379; /* green */
-        }
-        .number {
-            color: #d19a66; /* orange */
-        }
-        .boolean {
-            color: #56b6c2; /* cyan */
-        }
-        .null {
-            color: #dcdcdc; /* light gray */
-        }
-        .parametri{
-            color : dodgerblue;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+code[class*=language-],pre[class*=language-]{color:#f8f8f2;text-shadow:0 1px rgba(0,0,0,.3);font-family:Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{overflow:auto;}:not(pre)>code[class*=language-],pre[class*=language-]{}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#8292a2}.token.punctuation{color:#f8f8f2}.token.namespace{opacity:.7}.token.constant,.token.deleted,.token.property,.token.symbol,.token.tag{color:#f92672}.token.boolean,.token.number{color:#ae81ff}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string{color:#a6e22e}.language-css .token.string,.style .token.string,.token.entity,.token.operator,.token.url,.token.variable{color:#f8f8f2}.token.atrule,.token.attr-value,.token.class-name,.token.function{color:#e6db74}.token.keyword{color:#66d9ef}.token.important,.token.regex{color:#fd971f}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}
+get { 
+ 
+  background-color :rgb(1, 71, 55) ;
+  border-color : rgb(229, 231, 235);
+  border-radius : 4px;
+  color:  rgb(132, 225, 188);
+  border-style: solid;  
+  border-width : 0px;
+  
+  padding-right: 3px;
+  padding-left: 3px;
 
-</head>
-<body>
-<div class="container col-lg-8 custom-padding custom-margin">
-    <div class="p-2 pt-4 card mt-3 custom-padding custom-margin" style="background-color: darkslategray; color:white">
-        <h1>API Documentation</h1>
-        <p>Consommi.TN APIs Documentation - An E-Commerece Website </p>
-    </div>
-    <div id="api-container-user" class="container custom-padding custom-margin card my-3 py-2">
-        <h3>User Account Management</h3>
-    </div>
+  }
+post { 
+ 
+  background-color :rgb(99, 49, 18);
+  border-color : rgb(229, 231, 235);
+  border-radius : 4px;
+  color:  rgb(250, 202, 21) ;
+  border-style: solid;  
+  border-width : 0px;
+  
+  padding-right: 3px;
+  padding-left: 3px;
 
-    <div id="api-container-template" class="container custom-padding custom-margin card my-3 py-2">
-        <h3>Articles Management</h3>
-    </div>
-</div>
-</body>
-<script src="public/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</html>
+  }
+patch { 
+ 
+  background-color :rgb(35, 56, 118) ;
+  border-color : rgb(229, 231, 235);
+  border-radius : 4px;
+  color:  rgb(164, 202, 254);
+  border-style: solid;  
+  border-width : 0px;
+  
+  padding-right: 3px;
+  padding-left: 3px;
+
+  }
+
+delete { 
+ 
+  background-color :rgb(119, 29, 29) ;
+  border-color : rgb(229, 231, 235);
+  border-radius : 4px;
+  color:  rgb(248, 180, 180);
+  border-style: solid;  
+  border-width : 0px;
+  
+  padding-right: 3px;
+  padding-left: 3px;
+
+  }
+put{ 
+ 
+  background-color :rgb(74, 29, 150) ;
+  border-color : rgb(229, 231, 235);
+  border-radius : 4px;
+  color:  rgb(202, 191, 253);
+  border-width : 0px;
+  
+  padding-right: 3px;
+  padding-left: 3px;
+
+  }
+</style>
+

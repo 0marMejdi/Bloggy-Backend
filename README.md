@@ -4,11 +4,77 @@
 
 # Usage
 
-## Users Management 
+## Authentication
 
-#### <get> GET </get> : `/users/infos`  Retrieves the information of the currently authenticated user.
+<post> POST </post> : `/auth/register` Registers a new User.
+
+*Request Body*
+
+```json
+{
+  "email":"werner.heisenberg@gmail.com",//! unique
+  "password":"freedom",
+  "username":"heisen", //! unique
+  "name":"Werner", //optional
+  "lastName":"Heisenberg", //optional
+  "bio":"German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct  competition with the Manhattan Project" //optional
+} 
+```
+
+*Response Body*
+
+
+```json
+{
+    "Authorization": "eyJhbGciOiJIUzI...."
+}
+
+```
 
 ---
+
+<post> POST </post> : `/auth/login` Log in to existent account.
+
+
+*Request Body*
+
+```json
+{
+  "email":"werner.heisenberg@gmail.com",
+  "password":"freedom"
+}
+
+```
+*Response Body*
+
+
+```json
+{
+    "Authorization": "eyJhbGciOiJIUzI1NiI..."
+}
+
+```
+## Users Management 
+
+<get> GET </get> : `/users/infos`  Retrieves the information of the currently authenticated user.
+
+*Response Body*
+
+
+```json
+{
+    "email": "werner.heisenberg@gmail.com",
+    "name": "Werner",
+    "lastName": "Heisenberg",
+    "username": "heisen",
+    "bio": "German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct competition with the Manhattan Project",
+    "id": "6792d03f6ead5323be1a6fa4"
+}
+
+```
+
+---
+
 <patch> PATCH </patch> : `/users/infos` Updates the information of the currently authenticated user.  
 
 ```json
@@ -68,11 +134,30 @@
 
 
 ## Article API Endpoints
-  <get> GET </get> : `/article/:id` Retrieves an article by its ID.
- 
+
+
 <get> GET </get>: `/article` Retrieves all articles.
 
+---
+
+<get> GET </get> : `/article/:id` Retrieves an article by its ID.
+
+---
+
+
+<get> GET </get> : `/article/full` Fetches All Standalone articles with their nested comments 
+
+---
+
+<get> GET </get> : `/article/full/{id}` Fetches an article (or comment) with its nested comments. 
+
+---
+
 <post> POST </post>: `/article/create/` Creates a new article or a comment, with multiple image uploads. If the article is a comment on another article, provide the `fatherId` field with the ID of the parent article. Otherwise, set `fatherId` to `null` for standalone posts.  
+
+*Multipart/form-data*
+
+
 ```json
 {
     "title": "Article title",
@@ -84,19 +169,52 @@
 }
 ```
 
-<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).  
-*No body required.*
+---
 
-<get> GET </get>: `/article/:id/images` Retrieves all images of the specified article.  
+
+<post> POST </post> : `/article/:id/upvote` Upvotes an article.
+
+ ---
+
+<post> POST </post> : `/article/:id/downvote` Downvotes an article
+
+---
+
+
+<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).  
+
+*Multipart/form-data*
+
+```json
+{
+    "image": [TheImage]
+}
+```
+---
+<delete> DELETE </delete>: `/article/:id/image/delete/:index?` Deletes an article's image by its index (default is `0`).  
+
+---
+
 <post> POST </post>: `/article/:id/image/add` Adds a new image to the specified article.
-*No body required.*
- 
-<get> GET </get>: `/article/:id/image/:index?` Retrieves a specific image link from an article by its index (default is `0`).
- 
+
+*Multipart/form-data*
+
+```json
+{
+    "image": [TheImage]
+}
+```
+---
+
+
 <get> GET </get>: `/article/property` Retrieves all articles created by the currently authenticated user.
- 
-<get> GET </get>: `/article/owner/:id` Retrieves the owner of a specified article.
- 
+
+ ---
+
+<get> GET </get>: `/article/owner/:id` Retrieves the owner of a specified articl.
+
+ ---
+
 <patch> PATCH </patch>: `/article/:id` Updates an article by its ID.
 
 
@@ -107,15 +225,17 @@
   "content": "Updated content"
 }
 ```
- 
+
+ ---
+
 <delete> DELETE </delete>: `/article/:id` Deletes an article by its ID.
  
- 
+ ---
+
 <get> GET </get> : `/article/search/:name` Searches for articles by their name.
- 
-<post> POST </post> : `/article/:id/upvote` Upvotes an article.
- 
-<post> POST </post> : `/article/:id/downvote` Downvotes an article
+
+ ---
+
 
 
 ## Description
@@ -227,7 +347,7 @@ put{
   background-color :rgb(74, 29, 150) ;
   border-color : rgb(229, 231, 235);
   border-radius : 4px;
-  color:  rgb(202, 191, 253)
+  color:  rgb(202, 191, 253);
   border-width : 0px;
   
   padding-right: 3px;

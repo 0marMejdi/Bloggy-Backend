@@ -96,7 +96,7 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
 
   @UseInterceptors(
-    FileInterceptor("file", {
+    FileInterceptor("image", {
       storage: memoryStorage(), // Use memory storage
     }),
   )
@@ -120,6 +120,16 @@ export class ArticleController {
   @Get()
   async findAll(@Query('noimage', new DefaultValuePipe("")) noimage  : string="") {
     return this.articleService.findAll(noimage);
+  }
+
+  @Get("full")
+  async findAllCommented(){
+    return this.articleService.findAllCommented();
+  }
+
+  @Get("full/:id")
+  async findOneCommented(@Param('id') id : string){
+    return this.articleService.findOneCommented(id);
   }
 
   @Get("property")

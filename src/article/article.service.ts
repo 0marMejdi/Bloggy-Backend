@@ -364,4 +364,46 @@ export class ArticleService {
   }
   
   
+  findArticlesOf(
+    articles: Article[],
+    fatherId: string | null,
+    withComments: boolean
+  ): Article[] | CommentedArticle[] {
+    // Find articles with the given fatherId
+    const filteredArticles = articles.filter((article) => article.fatherId === fatherId);
+  
+    // If withComments is true, recursively fetch comments for each article
+    if (withComments) {
+      return filteredArticles.map((article) => ({
+        ...article,
+        comments: this.findArticlesOf(articles, article.id, true), // Recursively build the tree
+      }));
+    }
+  
+    // If withComments is false, return articles without the comments attribute
+    return filteredArticles;
+  }
+
+  async findAllCommented(){
+    let res = (await this.articleModel.find().lean().exec()).map((doc) =>
+      Article.fromDoc(doc),
+    );
+    return this.findArticlesOf(res,null,true);
+  }
+
+  async findOneCommented(id: string){
+    let res = (await this.articleModel.find().lean().exec()).map((doc) =>
+      Article.fromDoc(doc),
+    );
+
+    let comments =  this.findArticlesOf(res,id,true);
+    let article = res.find(el=>el.id===id)
+    if (!article)
+      throw new NotFoundException("article not found")
+    let commentedArticle : CommentedArticle = {...article,comments};
+    return commentedArticle;
+
+  }
+  
+  
 }
