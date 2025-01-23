@@ -224,6 +224,12 @@ export class ArticleService {
   
     // Find the existing vote of the user in the voters array
     const existingVote = article.voters.find((vote) => vote.voterId === userId);
+    console.log("article.voters");
+    console.log(article.voters);
+
+    console.log("existingVote");
+    console.log(existingVote);
+  
   
     switch (action) {
       case 'upvote':
@@ -238,6 +244,11 @@ export class ArticleService {
             console.log('User already upvoted. Resetting the vote.');
             existingVote.vote = '';
             article.upvotes -= 1;
+            console.log("article.voters");
+            console.log(article.voters);
+        
+            console.log("existingVote");
+            console.log(existingVote);
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
           } else if (existingVote.vote === '') {
             console.log('User had no previous vote. Changing to upvote.');
