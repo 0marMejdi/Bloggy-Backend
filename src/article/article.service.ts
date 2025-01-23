@@ -216,48 +216,43 @@ export class ArticleService {
     return prod.images;
   }
   async vote(articleId: string, userId: string, action: 'upvote' | 'downvote') {
-    const article = await this.articleModel.findById(articleId).lean().exec();
+    const article = await this.articleModel.findById(articleId);
   
     if (!article) {
       throw new NotFoundException('Article not found');
     }
   
     // Find the existing vote of the user in the voters array
-    const existingVote = article.voters.find((vote) => vote.voterId === userId);
+    const existingVoteIndex = article.voters.findIndex((vote) => vote.voterId === userId);
     console.log("article.voters");
     console.log(article.voters);
 
     console.log("existingVote");
-    console.log(existingVote);
+    console.log(existingVoteIndex);
   
   
     switch (action) {
       case 'upvote':
         console.log(`Action: upvote, User ID: ${userId}`);
-        if (!existingVote) {
+        if (existingVoteIndex==-1) {
           console.log('User has not voted yet. Adding new upvote.');
           article.voters.push({ voterId: userId, vote: 'upvote' });
           article.upvotes += 1;
           console.log(`Article upvotes increased to: ${article.upvotes}`);
         } else {
-          if (existingVote.vote === 'upvote') {
+          if (article.voters[existingVoteIndex].vote === 'upvote') {
             console.log('User already upvoted. Resetting the vote.');
-            existingVote.vote = '';
+            article.voters[existingVoteIndex].vote = '';
             article.upvotes -= 1;
-            console.log("article.voters");
-            console.log(article.voters);
-        
-            console.log("existingVote");
-            console.log(existingVote);
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
-          } else if (existingVote.vote === '') {
+          } else if (article.voters[existingVoteIndex].vote === '') {
             console.log('User had no previous vote. Changing to upvote.');
-            existingVote.vote = 'upvote';
+            article.voters[existingVoteIndex].vote = 'upvote';
             article.upvotes += 1;
             console.log(`Article upvotes increased to: ${article.upvotes}`);
-          } else if (existingVote.vote === 'downvote') {
+          } else if (article.voters[existingVoteIndex].vote === 'downvote') {
             console.log('User previously downvoted. Switching to upvote.');
-            existingVote.vote = 'upvote';
+            article.voters[existingVoteIndex].vote = 'upvote';
             article.downvotes -= 1;
             article.upvotes += 1;
             console.log(`Article downvotes decreased to: ${article.downvotes}`);
@@ -268,25 +263,25 @@ export class ArticleService {
     
       case 'downvote':
         console.log(`Action: downvote, User ID: ${userId}`);
-        if (!existingVote) {
+        if (!article.voters[existingVoteIndex]) {
           console.log('User has not voted yet. Adding new downvote.');
           article.voters.push({ voterId: userId, vote: 'downvote' });
           article.downvotes += 1;
           console.log(`Article downvotes increased to: ${article.downvotes}`);
         } else {
-          if (existingVote.vote === 'downvote') {
+          if (article.voters[existingVoteIndex].vote === 'downvote') {
             console.log('User already downvoted. Resetting the vote.');
-            existingVote.vote = '';
+            article.voters[existingVoteIndex].vote = '';
             article.downvotes -= 1;
             console.log(`Article downvotes decreased to: ${article.downvotes}`);
-          } else if (existingVote.vote === '') {
+          } else if (article.voters[existingVoteIndex].vote === '') {
             console.log('User had no previous vote. Changing to downvote.');
-            existingVote.vote = 'downvote';
+            article.voters[existingVoteIndex].vote = 'downvote';
             article.downvotes += 1;
             console.log(`Article downvotes increased to: ${article.downvotes}`);
-          } else if (existingVote.vote === 'upvote') {
+          } else if (article.voters[existingVoteIndex].vote === 'upvote') {
             console.log('User previously upvoted. Switching to downvote.');
-            existingVote.vote = 'downvote';
+            article.voters[existingVoteIndex].vote = 'downvote';
             article.upvotes -= 1;
             article.downvotes += 1;
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
@@ -301,7 +296,7 @@ export class ArticleService {
     }
     
   
-    await this.articleModel.findOneAndUpdate({_id:articleId},{...article});
+    await article.save();
     return article;
   }
   
