@@ -47,6 +47,8 @@ export class ArticleService {
   async create(createArticleDto: CreateArticleDto, userId: string, images?: Express.Multer.File[]) {
     // Initialize the new article object
     let newArticle = new Article(userId);
+    if (!newArticle.fatherId)
+      newArticle.fatherId=null;
     newArticle = {
       ...newArticle,
       ...createArticleDto,

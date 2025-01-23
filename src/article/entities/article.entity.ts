@@ -30,7 +30,7 @@ export class Article {
 
   @Prop({ required: true, unique: true })
   id: string;
-  @Prop({ required: true , default:null})
+  @Prop({  default:null})
 
   fatherId: string;
   @Prop({ required: true })
