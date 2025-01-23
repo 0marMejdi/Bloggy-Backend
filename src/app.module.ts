@@ -13,7 +13,7 @@ import { MorganInterceptor, MorganModule } from "nest-morgan";
 import { ParseBoolPipe } from "@nestjs/common/pipes";
 import { SocketModule } from "./socket/socket.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
-import { NotificationModule } from './Notification/notification.module';
+import { NotificationModule } from './notification/notification.module';
 
 dotenv.config();
 
