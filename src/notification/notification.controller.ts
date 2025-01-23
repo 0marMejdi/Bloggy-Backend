@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { CurrentUser } from "../auth/decorators/user.decorator";
-import { NotificationService } from "./Notification.service";
+import { NotificationService } from "./notification.service";
 import { User } from "../users/entities/user.entity";
 
 import { ApiTags } from "@nestjs/swagger";
