@@ -47,8 +47,7 @@ export class ArticleService {
   async create(createArticleDto: CreateArticleDto, userId: string, images?: Express.Multer.File[]) {
     // Initialize the new article object
     let newArticle = new Article(userId);
-    if (!newArticle.fatherId)
-      newArticle.fatherId=null;
+    if (!newArticle.fatherId) newArticle.fatherId = null;
     newArticle = {
       ...newArticle,
       ...createArticleDto,
@@ -61,24 +60,15 @@ export class ArticleService {
 
     // Handle optional image uploads
     if (images && images.length > 0) {
-      const uploadDir = `uploads/articles/${added.id}`;
       try {
-        // Create the directory for the article's images
-        await fs.mkdir(uploadDir, { recursive: true });
+        // Encode each image to Base64 and store them in the article's `images` array
+        const encodedImages = images.map((image) => image.buffer.toString('base64'));
 
-        // Process and save each image
-        const savedImagePaths = [];
-        for (const [index, image] of images.entries()) {
-          const imagePath = path.join(uploadDir, `${index}.jpg`);
-          await fs.writeFile(imagePath, image.buffer); // Save the image to disk
-          savedImagePaths.push(imagePath);
-        }
-
-        // Update the article document with image paths
-        articleDocument.images = savedImagePaths;
+        // Update the article document with the Base64-encoded images
+        articleDocument.images = encodedImages;
         await articleDocument.save();
       } catch (e) {
-        console.error('Error saving images:', e);
+        console.error('Error encoding images:', e);
       }
     }
 

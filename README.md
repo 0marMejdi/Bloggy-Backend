@@ -68,11 +68,9 @@
 
 
 ## Article API Endpoints
-
-<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).  
-*No body required.*
-
-<get> GET </get>: `/article/:id/images` Retrieves all images of the specified article.  
+  <get> GET </get> : `/article/:id` Retrieves an article by its ID.
+ 
+<get> GET </get>: `/article` Retrieves all articles.
 
 <post> POST </post>: `/article/create/` Creates a new article or a comment, with multiple image uploads. If the article is a comment on another article, provide the `fatherId` field with the ID of the parent article. Otherwise, set `fatherId` to `null` for standalone posts.  
 ```json
@@ -85,12 +83,15 @@
     "images": [ArrayOfImages]
 }
 ```
+
+<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).  
+*No body required.*
+
+<get> GET </get>: `/article/:id/images` Retrieves all images of the specified article.  
 <post> POST </post>: `/article/:id/image/add` Adds a new image to the specified article.
 *No body required.*
  
 <get> GET </get>: `/article/:id/image/:index?` Retrieves a specific image link from an article by its index (default is `0`).
- 
-<get> GET </get>: `/article` Retrieves all articles.
  
 <get> GET </get>: `/article/property` Retrieves all articles created by the currently authenticated user.
  
@@ -109,7 +110,6 @@
  
 <delete> DELETE </delete>: `/article/:id` Deletes an article by its ID.
  
-<get> GET </get> : `/article/:id` Retrieves an article by its ID.
  
 <get> GET </get> : `/article/search/:name` Searches for articles by their name.
  
