@@ -46,7 +46,7 @@ export class Article {
   downvotes: number;
 
   @Prop({ required: true })
-  voters: Array<{ voterId: string; vote: string }>;
+  voters: Array<{ voterId: string; vote: string | null }>;
 
   @Prop()
   slug: string;

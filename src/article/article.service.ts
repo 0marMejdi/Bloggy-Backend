@@ -216,7 +216,7 @@ export class ArticleService {
     return prod.images;
   }
   async vote(articleId: string, userId: string, action: 'upvote' | 'downvote') {
-    const article = await this.articleModel.findById(articleId);
+    const article = await this.articleModel.findById(articleId).lean().exec();
   
     if (!article) {
       throw new NotFoundException('Article not found');
@@ -224,12 +224,16 @@ export class ArticleService {
   
     // Find the existing vote of the user in the voters array
     const existingVoteIndex = article.voters.findIndex((vote) => vote.voterId === userId);
+    console.log("article");
+    console.log(article);
     console.log("article.voters");
     console.log(article.voters);
 
     console.log("existingVote");
     console.log(existingVoteIndex);
   
+
+
   
     switch (action) {
       case 'upvote':
@@ -242,10 +246,10 @@ export class ArticleService {
         } else {
           if (article.voters[existingVoteIndex].vote === 'upvote') {
             console.log('User already upvoted. Resetting the vote.');
-            article.voters[existingVoteIndex].vote = '';
+            article.voters[existingVoteIndex].vote = null;
             article.upvotes -= 1;
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
-          } else if (article.voters[existingVoteIndex].vote === '') {
+          } else if (article.voters[existingVoteIndex].vote === null) {
             console.log('User had no previous vote. Changing to upvote.');
             article.voters[existingVoteIndex].vote = 'upvote';
             article.upvotes += 1;
@@ -271,10 +275,10 @@ export class ArticleService {
         } else {
           if (article.voters[existingVoteIndex].vote === 'downvote') {
             console.log('User already downvoted. Resetting the vote.');
-            article.voters[existingVoteIndex].vote = '';
+            article.voters[existingVoteIndex].vote = null;
             article.downvotes -= 1;
             console.log(`Article downvotes decreased to: ${article.downvotes}`);
-          } else if (article.voters[existingVoteIndex].vote === '') {
+          } else if (article.voters[existingVoteIndex].vote === null) {
             console.log('User had no previous vote. Changing to downvote.');
             article.voters[existingVoteIndex].vote = 'downvote';
             article.downvotes += 1;
@@ -295,9 +299,12 @@ export class ArticleService {
         break;
     }
     
-  
-    await article.save();
-    return article;
+    console.log("article.voters");
+    console.log(article.voters);
+    article.voters=[...article.voters];
+    
+    await this.articleModel.findByIdAndDelete(articleId);
+    return await this.articleModel.create(article);
   }
   
 
