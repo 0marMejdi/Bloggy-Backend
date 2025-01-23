@@ -10,7 +10,7 @@ export class CreateArticleDto {
   content: string;
 
   @IsMongoId()
-  @IsNotEmpty()
+  @IsOptional()
   fatherId: string; // Parent article or thread ID
 
   @IsString()
