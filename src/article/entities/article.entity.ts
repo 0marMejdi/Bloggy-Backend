@@ -15,6 +15,7 @@ export class Article {
     this.voters=[];
     
     this.images = [];
+    this.fatherId=  null;
     this.owner = userId;
   }
 

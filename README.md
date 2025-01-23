@@ -54,9 +54,9 @@
 
 ```json
 {
-  "name": "updated name",
-  "email": "updated email",
-  "role": "updated role"
+  "name":"new name",
+  "lastName":"new lastName",
+  "bio":"new biooo"
 }
 ```
 
