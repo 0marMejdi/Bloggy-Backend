@@ -216,7 +216,7 @@ export class ArticleService {
     return prod.images;
   }
   async vote(articleId: string, userId: string, action: 'upvote' | 'downvote') {
-    const article = await this.articleModel.findById(articleId);
+    const article = await this.articleModel.findById(articleId).lean().exec();
   
     if (!article) {
       throw new NotFoundException('Article not found');
@@ -301,7 +301,7 @@ export class ArticleService {
     }
     
   
-    await article.save();
+    await this.articleModel.findOneAndUpdate({_id:articleId},{...article});
     return article;
   }
   
