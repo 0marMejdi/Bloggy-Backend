@@ -43,6 +43,7 @@ export class ArticleController {
       storage: memoryStorage(), // Use memory storage
     }),
   )
+  
   async changeImage(
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: User,
@@ -65,6 +66,8 @@ export class ArticleController {
 
 
   @Post('/create/')
+  @UseGuards(JwtAuthGuard)
+
   @UseInterceptors(FilesInterceptor('images')) // Handle multiple image uploads
   async submit(
     @Body() createArticleDto: CreateArticleDto,
@@ -77,6 +80,8 @@ export class ArticleController {
 
 
   @Post("/:id/image/add")
+  @UseGuards(JwtAuthGuard)
+
   @UseInterceptors(
     FileInterceptor("file", {
       storage: memoryStorage(), // Use memory storage
@@ -105,6 +110,8 @@ export class ArticleController {
   }
 
   @Get("property")
+  @UseGuards(JwtAuthGuard)
+
   async getMyArticles(@CurrentUser() user) {
     return this.articleService.findByUserId(user.id);
   }
@@ -115,6 +122,8 @@ export class ArticleController {
   }
 
   @Patch(":id")
+  @UseGuards(JwtAuthGuard)
+
   update(@Param("id") id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articleService.update(id, updateArticleDto);
   }
@@ -139,6 +148,8 @@ export class ArticleController {
   }
 
   @Post(':id/upvote')
+  @UseGuards(JwtAuthGuard)
+
 async upvote(
   @Param('id') articleId: string,
   @CurrentUser() user: User,
@@ -146,6 +157,8 @@ async upvote(
   return this.articleService.vote(articleId, user.id, "upvote");
 }
 @Post(':id/downvote')
+@UseGuards(JwtAuthGuard)
+
 async downvote(
   @Param('id') articleId: string,
   @CurrentUser() user: User,
