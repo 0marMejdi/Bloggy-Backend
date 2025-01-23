@@ -17,7 +17,6 @@ export class CreateArticleDto {
   @IsOptional()
   slug?: string;
 
-  @IsMongoId()
-  owner : string;
+
 }
 
