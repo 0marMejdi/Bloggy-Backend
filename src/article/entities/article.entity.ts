@@ -64,3 +64,6 @@ export class Article {
   
 
 }
+export type CommentedArticle = Article & {
+  comments: CommentedArticle[]; // Recursive type for comments
+};

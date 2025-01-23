@@ -11,6 +11,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import {
   Article,
+  CommentedArticle,
 } from "./entities/article.entity";
 import { ImageService } from "../image/image.service";
 import { User } from "../users/entities/user.entity";
@@ -226,54 +227,68 @@ export class ArticleService {
   
     switch (action) {
       case 'upvote':
+        console.log(`Action: upvote, User ID: ${userId}`);
         if (!existingVote) {
-          // User has not voted yet, create a new upvote
+          console.log('User has not voted yet. Adding new upvote.');
           article.voters.push({ voterId: userId, vote: 'upvote' });
           article.upvotes += 1;
+          console.log(`Article upvotes increased to: ${article.upvotes}`);
         } else {
           if (existingVote.vote === 'upvote') {
-            // User already upvoted, reset the vote
+            console.log('User already upvoted. Resetting the vote.');
             existingVote.vote = '';
             article.upvotes -= 1;
+            console.log(`Article upvotes decreased to: ${article.upvotes}`);
           } else if (existingVote.vote === '') {
-            // User hasn't voted, so now they are upvoting
+            console.log('User had no previous vote. Changing to upvote.');
             existingVote.vote = 'upvote';
             article.upvotes += 1;
+            console.log(`Article upvotes increased to: ${article.upvotes}`);
           } else if (existingVote.vote === 'downvote') {
-            // User downvoted, switch to upvote
+            console.log('User previously downvoted. Switching to upvote.');
             existingVote.vote = 'upvote';
             article.downvotes -= 1;
             article.upvotes += 1;
+            console.log(`Article downvotes decreased to: ${article.downvotes}`);
+            console.log(`Article upvotes increased to: ${article.upvotes}`);
           }
         }
         break;
-  
+    
       case 'downvote':
+        console.log(`Action: downvote, User ID: ${userId}`);
         if (!existingVote) {
-          // User has not voted yet, create a new downvote
+          console.log('User has not voted yet. Adding new downvote.');
           article.voters.push({ voterId: userId, vote: 'downvote' });
           article.downvotes += 1;
+          console.log(`Article downvotes increased to: ${article.downvotes}`);
         } else {
           if (existingVote.vote === 'downvote') {
-            // User already downvoted, reset the vote
+            console.log('User already downvoted. Resetting the vote.');
             existingVote.vote = '';
             article.downvotes -= 1;
+            console.log(`Article downvotes decreased to: ${article.downvotes}`);
           } else if (existingVote.vote === '') {
-            // User hasn't voted, so now they are downvoting
+            console.log('User had no previous vote. Changing to downvote.');
             existingVote.vote = 'downvote';
             article.downvotes += 1;
+            console.log(`Article downvotes increased to: ${article.downvotes}`);
           } else if (existingVote.vote === 'upvote') {
-            // User upvoted, switch to downvote
+            console.log('User previously upvoted. Switching to downvote.');
             existingVote.vote = 'downvote';
             article.upvotes -= 1;
             article.downvotes += 1;
+            console.log(`Article upvotes decreased to: ${article.upvotes}`);
+            console.log(`Article downvotes increased to: ${article.downvotes}`);
           }
         }
         break;
-  
+    
       default:
-        throw new BadRequestException('Invalid action.');
+        console.log(`Unknown action: ${action}`);
+        break;
     }
+    
   
     await article.save();
     return article;
@@ -312,5 +327,28 @@ export class ArticleService {
   
     return { message: `Image at index ${index} deleted successfully` };
   }
+
+  async findOneWithComments(id: string, withComments: string): Promise<CommentedArticle | Article> {
+    const article = await this.articleModel.findById(id).lean().exec();
+    if (!article) {
+      throw new NotFoundException(`Article with ID ${id} not found`);
+    }
+  
+    // If withComments is true, fetch comments recursively
+    if (withComments === "true") {
+      const comments = await this.articleModel.find({ fatherId: id }).lean().exec();
+      const commentedArticles: CommentedArticle[] = await Promise.all(
+        comments.map(async (comment) => {
+          const nestedComments = await this.findOneWithComments(comment.id, "true");
+          //@ts-ignore
+          return { ...comment, comments: nestedComments.comments };
+        })
+      );
+      return { ...article, comments: commentedArticles };
+    }
+  
+    return article; // Return article without comments
+  }
+  
   
 }
