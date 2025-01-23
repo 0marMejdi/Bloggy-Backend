@@ -79,19 +79,20 @@ export class ArticleService {
 
 
   async addImage(article: Article, imageFile: Express.Multer.File) {
-    const indecies = article.images.map((path) =>
-      Number(path.split("/").pop().split(".")[0]),
-    );
-    const next = indecies.length == 0 ? 0 : Math.max(...indecies) + 1;
-    await fs.mkdir(`uploads/products/${article.id}`, { recursive: true });
-    const path = this.pathFromId(article.id, next);
-    await fs.writeFile(path, Buffer.from(imageFile.buffer));
+    // Encode the image file into Base64 format
+    const encodedImage = imageFile.buffer.toString('base64');
+  
+    // Add the encoded image to the `images` array
+    article.images.push(encodedImage);
+  
+    // Update the article document in the database
     await this.articleModel.findByIdAndUpdate(article.id, {
-      images: [...article.images, path],
+      images: article.images,
     });
-    return path;
+  
+    return { message: "Image added successfully", imageIndex: article.images.length - 1 };
   }
-
+  
   async getArticleOwner(articleId: string) {
     const article = await this.articleModel
       .findOne({ id: articleId })
@@ -105,12 +106,23 @@ export class ArticleService {
     return User.fromDoc(article.owner);
   }
 
-  async findAll(): Promise<Article[]> {
-    return (await this.articleModel.find().lean().exec()).map((doc) =>
+  async findAll(noimage: string): Promise<Article[]> {
+    let res = (await this.articleModel.find().lean().exec()).map((doc) =>
       Article.fromDoc(doc),
     );
+  
+    // If noimage is "true", remove the images attribute from each article
+    if (noimage === "true") {
+      //@ts-ignore
+      res = res.map((article) => {
+        const { images, ...rest } = article; // Destructure to exclude images
+        return rest; // Return the article without the images attribute
+      });
+    }
+  
+    return res;
   }
-
+  
   async findOne(id: string): Promise<Article> {
     const article = await this.articleModel.findById(id).exec();
     if (!article) {
@@ -268,12 +280,37 @@ export class ArticleService {
   }
   
 
-  async changeImage(prod: Article, file, index: number) {
-    if (!Boolean(prod.images) || !prod.images[index])
+  async changeImage(prod: Article, file: Express.Multer.File, index: number) {
+    if (!prod.images || !prod.images[index]) {
       throw new NotFoundException(`Image with index ${index} is not found`);
-    // await fs.rm(prod.images[index]);
-    console.log(file);
-    console.log("inside change image handler");
-    await fs.writeFile(prod.images[index], Buffer.from(file.buffer));
+    }
+  
+    // Encode the new image into Base64 format
+    const encodedImage = file.buffer.toString('base64');
+  
+    // Replace the image at the given index in the `images` array
+    prod.images[index] = encodedImage;
+  
+    // Save the updated article document to the database
+    await this.articleModel.updateOne({ _id: prod.id }, { images: prod.images });
+  
+    console.log(`Image at index ${index} has been replaced successfully.`);
   }
+  async deleteImage(article: Article, index: number) {
+    // Check if the index is valid
+    if (!article.images || !article.images[index]) {
+      throw new NotFoundException(`Image with index ${index} is not found`);
+    }
+  
+    // Remove the image at the specified index
+    const updatedImages = article.images.filter((_, i) => i !== index);
+  
+    // Update the article document in the database
+    await this.articleModel.findByIdAndUpdate(article.id, {
+      images: updatedImages,
+    });
+  
+    return { message: `Image at index ${index} deleted successfully` };
+  }
+  
 }

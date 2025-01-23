@@ -39,7 +39,7 @@ export class ArticleController {
   @Put("/:id/image/change/:index?")
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
-    FileInterceptor("file", {
+    FileInterceptor("image", {
       storage: memoryStorage(), // Use memory storage
     }),
   )
@@ -54,6 +54,19 @@ export class ArticleController {
     return this.articleService.changeImage(article, file, index);
   }
 
+  @Delete("/:id/image/delete/:index?")
+  @UseGuards(JwtAuthGuard)
+
+
+  async deleteImage(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User,
+    @Param("id", ArticleByIdPipe) article: Article,
+    @Param("index", new DefaultValuePipe(0), ParseIntPipe) index: number,
+  ) {
+    await this.articleService.isOwner(article, user);
+    return this.articleService.deleteImage(article, index);
+  }
   @Get(":id/images")
   async getAllImages(
     @Param("id") id: string,
@@ -105,8 +118,8 @@ export class ArticleController {
   }
 
   @Get()
-  async findAll() {
-    return this.articleService.findAll();
+  async findAll(@Query('noimage', new DefaultValuePipe("")) noimage  : string="") {
+    return this.articleService.findAll(noimage);
   }
 
   @Get("property")
