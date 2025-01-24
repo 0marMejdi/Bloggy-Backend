@@ -25,6 +25,11 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
+
+  @Get("isvalid/:emailorpassword")
+  async isValid(@Param("emailorpassword") emailorpassword : string){
+    return this.usersService.isValid(emailorpassword);
+  }
   @Get("infos")
   @UseGuards(JwtAuthGuard) // Assuming AuthGuard is your authentication guard
   async whoami(@CurrentUser() user) {
@@ -50,9 +55,14 @@ export class UsersController {
     return { message: "password changed" };
   }
 
+
   @Get("email/:email")
   findOneByEmail(@Param("email") email: string): Promise<User> {
     return this.usersService.findByEmail(email);
+  }
+  @Get("username/:username")
+  findOneByUserName(@Param("username") username: string): Promise<User> {
+    return this.usersService.findByUsername(username);
   }
 
   @Get()

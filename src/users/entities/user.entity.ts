@@ -5,7 +5,9 @@ export class User {
   constructor() {
   }
 
-  static fromDoc(doc: any): User {
+  static fromDoc(doc: any): User | null {
+    if (!doc)
+      return null;
     const { _id = null, __v = null, ...user } = { ...doc };
 
     return user;

@@ -1,105 +1,108 @@
-
-
-
-
 # Usage
 
 ## Authentication
 
 <post> POST </post> : `/auth/register` Registers a new User.
 
-*Request Body*
+_Request Body_
 
 ```json
 {
-  "email":"werner.heisenberg@gmail.com",//! unique
-  "password":"freedom",
-  "username":"heisen", //! unique
-  "name":"Werner", //optional
-  "lastName":"Heisenberg", //optional
-  "bio":"German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct  competition with the Manhattan Project" //optional
-} 
+	"email": "werner.heisenberg@gmail.com", //! unique
+	"password": "freedom",
+	"username": "heisen", //! unique
+	"name": "Werner", //optional
+	"lastName": "Heisenberg", //optional
+	"bio": "German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct  competition with the Manhattan Project" //optional
+}
 ```
 
-*Response Body*
-
+_Response Body_
 
 ```json
 {
-    "Authorization": "eyJhbGciOiJIUzI...."
+	"Authorization": "eyJhbGciOiJIUzI...."
 }
-
 ```
 
 ---
 
 <post> POST </post> : `/auth/login` Log in to existent account.
 
-
-*Request Body*
+_Request Body_
 
 ```json
 {
-  "email":"werner.heisenberg@gmail.com",
-  "password":"freedom"
+	"email": "werner.heisenberg@gmail.com",
+	"password": "freedom"
 }
-
 ```
-*Response Body*
 
+_Response Body_
 
 ```json
 {
-    "Authorization": "eyJhbGciOiJIUzI1NiI..."
+	"Authorization": "eyJhbGciOiJIUzI1NiI..."
 }
-
 ```
-## Users Management 
 
-<get> GET </get> : `/users/infos`  Retrieves the information of the currently authenticated user.
+## Users Management
 
-*Response Body*
+<get> GET </get> : `/users/infos` Retrieves the information of the currently authenticated user.
 
+_Response Body_
 
 ```json
 {
-    "email": "werner.heisenberg@gmail.com",
-    "name": "Werner",
-    "lastName": "Heisenberg",
-    "username": "heisen",
-    "bio": "German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct competition with the Manhattan Project",
-    "id": "6792d03f6ead5323be1a6fa4"
+	"email": "werner.heisenberg@gmail.com",
+	"name": "Werner",
+	"lastName": "Heisenberg",
+	"username": "heisen",
+	"bio": "German theoretical physicist and 1932 Nobel Prize winner. Heisenberg was a main contributor to the German atomic program during World War II, in direct competition with the Manhattan Project",
+	"id": "6792d03f6ead5323be1a6fa4"
 }
-
 ```
 
 ---
 
-<patch> PATCH </patch> : `/users/infos` Updates the information of the currently authenticated user.  
+<patch> PATCH </patch> : `/users/infos` Updates the information of the currently authenticated user.
 
 ```json
 {
-  "name":"new name",
-  "lastName":"new lastName",
-  "bio":"new biooo"
+	"name": "new name",
+	"lastName": "new lastName",
+	"bio": "new biooo"
 }
-
 ```
+
 ---
+
 <patch> PATCH </patch> : `/users/infos/password` Changes the password of the currently authenticated user.
 
-
 ```json
 {
-  "oldPassword": "currentPassword",
-  "newPassword": "newPassword"
+	"oldPassword": "currentPassword",
+	"newPassword": "newPassword"
 }
 ```
-
 
 ---
 
 <get> GET </get> : `/users/email/{email}` Finds a user by email address. Replace `{email}` with the user's email.
+
+---
+
+<get> GET </get> : `/users/username/{username}` Finds a user by username.
+
+---
+
+<get> GET </get> : `/users/isvalid/{username or email}` checks if the email or username are taken or no... returns
+
+```json
+
+{"isTaken" : true |  false}
+
+```
 
 ---
 
@@ -108,7 +111,6 @@
 **Query Parameter:**  
 `transform` (optional): Boolean to decide transformation logic.
 
-
 ---
 
 <get> GET </get> : `/users/{id}` Finds a user by ID. Replace `{id}` with the user's ID.
@@ -116,25 +118,21 @@
 ---
 
 <patch> PATCH </patch> : `/users/{id}` Updates a user by ID. Replace `{id}` with the user's ID.
-**Request Body:** 
+**Request Body:**
 
 ```json
 {
-  "name":"new name",
-  "lastName":"new lastName",
-  "bio":"new biooo"
+	"name": "new name",
+	"lastName": "new lastName",
+	"bio": "new biooo"
 }
 ```
 
-
 ---
 
-<delete> DELETE </delete> :  `/users/{id}` Removes a user by ID. Replace `{id}` with the user's ID.
-
-
+<delete> DELETE </delete> : `/users/{id}` Removes a user by ID. Replace `{id}` with the user's ID.
 
 ## Article API Endpoints
-
 
 <get> GET </get>: `/article` Retrieves all articles.
 
@@ -144,19 +142,17 @@
 
 ---
 
-
-<get> GET </get> : `/article/full` Fetches All Standalone articles with their nested comments 
-
----
-
-<get> GET </get> : `/article/full/{id}` Fetches an article (or comment) with its nested comments. 
+<get> GET </get> : `/article/full` Fetches All Standalone articles with their nested comments
 
 ---
 
-<post> POST </post>: `/article/create/` Creates a new article or a comment, with multiple image uploads. If the article is a comment on another article, provide the `fatherId` field with the ID of the parent article. Otherwise, set `fatherId` to `null` for standalone posts.  
+<get> GET </get> : `/article/full/{id}` Fetches an article (or comment) with its nested comments.
 
-*Multipart/form-data*
+---
 
+<post> POST </post>: `/article/create/` Creates a new article or a comment, with multiple image uploads. If the article is a comment on another article, provide the `fatherId` field with the ID of the parent article. Otherwise, set `fatherId` to `null` for standalone posts.
+
+_Multipart/form-data_
 
 ```json
 {
@@ -171,72 +167,69 @@
 
 ---
 
-
 <post> POST </post> : `/article/:id/upvote` Upvotes an article.
 
- ---
+---
 
 <post> POST </post> : `/article/:id/downvote` Downvotes an article
 
 ---
 
+<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).
 
-<put> PUT </put>: `/article/:id/image/change/:index?` Changes an article's image by its index (default is `0`).  
-
-*Multipart/form-data*
+_Multipart/form-data_
 
 ```json
 {
     "image": [TheImage]
 }
 ```
+
 ---
-<delete> DELETE </delete>: `/article/:id/image/delete/:index?` Deletes an article's image by its index (default is `0`).  
+
+<delete> DELETE </delete>: `/article/:id/image/delete/:index?` Deletes an article's image by its index (default is `0`).
 
 ---
 
 <post> POST </post>: `/article/:id/image/add` Adds a new image to the specified article.
 
-*Multipart/form-data*
+_Multipart/form-data_
 
 ```json
 {
     "image": [TheImage]
 }
 ```
----
 
+---
 
 <get> GET </get>: `/article/property` Retrieves all articles created by the currently authenticated user.
 
- ---
+---
 
 <get> GET </get>: `/article/owner/:id` Retrieves the owner of a specified articl.
 
- ---
+---
 
 <patch> PATCH </patch>: `/article/:id` Updates an article by its ID.
 
-
 ```json
 {
-  "title": "Updated title",
-  "description": "Updated description",
-  "content": "Updated content"
+	"title": "Updated title",
+	"description": "Updated description",
+	"content": "Updated content"
 }
 ```
 
- ---
+---
 
 <delete> DELETE </delete>: `/article/:id` Deletes an article by its ID.
- 
- ---
+
+---
 
 <get> GET </get> : `/article/search/:name` Searches for articles by their name.
 
- ---
-
-
+---
 
 ## Description
 
@@ -288,6 +281,7 @@ you'd like to join them, please [read more here](https://docs.nestjs.com/support
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
 <style>
 get { 
  
@@ -355,4 +349,3 @@ put{
 
   }
 </style>
-
