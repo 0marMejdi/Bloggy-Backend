@@ -12,7 +12,10 @@ export class AppController {
 
   @Get()
   getDoc(@Res() res){
-    return res.redirect('/uploads/index.html');
+    let x = fs.readFileSync('uploads/index.html','utf-8');
+    res.setHeader('Content-Type', 'text/html'); // Set the content type to HTML
+
+    res.send(x);
 
   }
 
