@@ -29,13 +29,18 @@ export class ArticleService {
 
 
 
-
+  async findFullByUserId(id: string) {
+    let res = (await this.articleModel.find({owner:id}).lean().exec()).map((doc) =>
+      Article.fromDoc(doc),
+    );
+    return this.findArticlesOf(res,null,true);  }
+  
   /**
    * Upload Article Object into Database ! Highly Recommended for any save
    * @param article : Article
-   *
-   */
-  async add(article: Article) {
+  *
+  */
+ async add(article: Article) {
     const productDocument = new this.articleModel(article);
     productDocument.id = productDocument._id.toString();
     return await productDocument.save();

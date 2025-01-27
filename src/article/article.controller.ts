@@ -122,6 +122,10 @@ export class ArticleController {
     return this.articleService.findAll(noimage);
   }
 
+  @Get("full/byUserId/:id")
+  async findFullByUserId(@Param('id') id : string){
+    return this.articleService.findFullByUserId(id);
+  }
   @Get("full")
   async findAllCommented(){
     return this.articleService.findAllCommented();
