@@ -239,7 +239,7 @@ export class ArticleService {
    */
   async searchByName(name: string): Promise<Article[]> {
     const products = await this.articleModel
-      .find({ name: { $regex: name, $options: "i" } })
+      .find({ title: { $regex: name, $options: "i" } })
       .lean()
       .exec();
 

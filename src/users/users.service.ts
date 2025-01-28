@@ -13,6 +13,16 @@ import { ChangePasswordDto } from "./dto/change-password.dto";
 
 @Injectable()
 export class UsersService {
+
+	 async searchByName(name: string): Promise<User[]> {
+		const products = await this.userModel
+		  .find({ name: { $regex: name, $options: "i" } })
+		  .lean()
+		  .exec();
+	
+		return products.map((doc) => User.fromDoc(doc));
+	  }
+
 	async isValid(emailorpassword: string) {
 		let x = [
 			...(await this.userModel

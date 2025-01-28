@@ -44,7 +44,10 @@ export class UsersController {
   ) {
     return this.update(user.id, updateUserDto);
   }
-
+  @Get("serch/:name")
+  async searchByName(@Param('name') name:string){
+    return this.usersService.searchByName(name);
+  }
   @Patch("infos/password")
   @UseGuards(JwtAuthGuard)
   async changePassword(
