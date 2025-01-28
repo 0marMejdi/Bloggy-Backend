@@ -16,6 +16,7 @@ import {
 import { ImageService } from "../image/image.service";
 import { User } from "../users/entities/user.entity";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { find } from "rxjs";
 
 
 require("dotenv").config();
@@ -28,7 +29,50 @@ export class ArticleService {
   ) {}
 
 
+  async findMultiple(project:{content:boolean,images:boolean,ownerid:string|null,comments:boolean}){
+    console.log("project");
+    console.log(project);
+    let projection : any= {};
+    let filter  :any={};
+    if (!project.images){
+      projection.images=0;
+    }
+    if(!project.content){
+      projection.content=0;
+    }
+    if (project.ownerid){
+      filter.owner=project.ownerid;
+    }
+    if (!project.comments){
+      filter.fatherId = null;
+    }
+    let articles =await this.articleModel.find({...filter},{...projection}).lean().exec();
 
+    if(project.comments){
+      console.log("including comments");
+      //@ts-ignore
+      return await this.findArticlesOf(articles,null,true);
+    }
+
+    return articles;
+
+
+  }
+
+  async getComments(articleId,project:{content:boolean,images:boolean}){
+    let projection : any= {};
+    let filter  :any={};
+    if (!project.images){
+      projection.images=0;
+    }
+    if(!project.content){
+      projection.content=0;
+    }
+    
+    let articles =await this.articleModel.find({...projection}).lean().exec();
+    return this.findArticlesOf(articles,articleId,true);
+
+  }
   async findFullByUserId(id: string) {
     let res = (await this.articleModel.find({owner:id}).lean().exec()).map((doc) =>
       Article.fromDoc(doc),

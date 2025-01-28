@@ -7,6 +7,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -76,8 +77,25 @@ export class ArticleController {
   }
 
  
-
-
+  @Get('find')
+  async findMultiple(
+    @Query('images', new DefaultValuePipe(true), new ParseBoolPipe() ) images : boolean,
+    @Query('comments',new DefaultValuePipe(true), new ParseBoolPipe() ) comments : boolean,
+    @Query('ownerid', new DefaultValuePipe(null)) ownerid : string|null,
+    @Query('content',new DefaultValuePipe(true), new ParseBoolPipe() ) content : boolean,
+  
+ ){
+    return this.articleService.findMultiple({images,comments,ownerid,content})
+  }
+  @Get('comments/:id')
+  async getCommentsById(
+    @Query('images', new DefaultValuePipe(true), new ParseBoolPipe() ) images : boolean,
+    @Query('content',new DefaultValuePipe(true), new ParseBoolPipe() ) content : boolean,
+    @Param ('id') id
+  
+ ){
+    return this.articleService.getComments(id,{images,content});
+  }
   @Post('/create/')
   @UseGuards(JwtAuthGuard)
 
@@ -192,5 +210,6 @@ async downvote(
 ) {
   return this.articleService.vote(articleId, user.id, "downvote");
 }
+
 
 }
