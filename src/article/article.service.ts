@@ -29,36 +29,60 @@ export class ArticleService {
   ) {}
 
 
-  async findMultiple(project:{content:boolean,images:boolean,ownerid:string|null,comments:boolean}){
+  async findMultiple(project: {
+    content: boolean;
+    images: boolean;
+    ownerid: string | null;
+    comments: boolean;
+    page: number;
+    limit: number;
+  }) {
     console.log("project");
     console.log(project);
-    let projection : any= {};
-    let filter  :any={};
-    if (!project.images){
-      projection.images=0;
+  
+    let projection: any = {};
+    let filter: any = {};
+  
+    // Handle projection
+    if (!project.images) {
+      projection.images = 0;
     }
-    if(!project.content){
-      projection.content=0;
+    if (!project.content) {
+      projection.content = 0;
     }
-    if (project.ownerid){
-      filter.owner=project.ownerid;
+  
+    // Handle filter
+    if (project.ownerid) {
+      filter.owner = project.ownerid;
     }
-    if (!project.comments){
+    if (!project.comments) {
       filter.fatherId = null;
     }
-    let articles =await this.articleModel.find({...filter},{...projection}).lean().exec();
-
-    if(project.comments){
+  
+    // Fetch all articles (no database-level pagination)
+    let articles = await this.articleModel
+      .find({ ...filter }, { ...projection })
+      .lean()
+      .exec();
+  
+    // Handle comments if required
+    if (project.comments) {
       console.log("including comments");
       //@ts-ignore
-      return await this.findArticlesOf(articles,null,true);
+      articles= await this.findArticlesOf(articles, null, true);
     }
-
-    return articles;
-
-
+    let paginatedArticles = articles;
+    // Apply pagination to the fetched data
+    if(project.page && project.limit){
+      const startIndex = (project.page - 1) * project.limit;
+      const endIndex = startIndex + project.limit;
+      paginatedArticles = articles.slice(startIndex, endIndex);
+  
+    }
+    console.log(paginatedArticles);
+    return paginatedArticles;
   }
-
+  
   async getComments(articleId,project:{content:boolean,images:boolean}){
     let projection : any= {};
     let filter  :any={};
