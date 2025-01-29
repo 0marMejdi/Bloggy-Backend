@@ -117,7 +117,7 @@ async findMultiple(
 			user.id,
 			images
 		);
-		return { id };
+		return id;
 	}
 
 	@Post("/:id/image/add")

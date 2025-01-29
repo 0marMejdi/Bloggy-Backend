@@ -146,7 +146,7 @@ export class ArticleService {
       }
     }
 
-    return added.id;
+    return added;
   }
 
 
