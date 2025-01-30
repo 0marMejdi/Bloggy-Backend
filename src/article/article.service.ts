@@ -208,15 +208,29 @@ export class ArticleService {
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,
+    images : Express.Multer.File[],
   ): Promise<Article> {
     //get the article
-    const article = await this.articleModel.findById(id).exec();
+    let encodedImages=null;
+    if (images && images.length > 0) {
+      try {
+        // Encode each image to Base64 and store them in the article's `images` array
+        encodedImages = images.map((image) => image.buffer.toString('base64'));        
+      } catch (e) {
+        console.error('Error encoding images:', e);
+      }
+    }
+    let updateBody  : (UpdateArticleDto & {images?:string})  = {...updateArticleDto}
+    if (encodedImages){
+      updateBody.images = encodedImages;
+    }
     const updatedArticle = await this.articleModel
-      .findByIdAndUpdate(id, updateArticleDto, { new: true })
+      .findByIdAndUpdate(id, {...updateBody}, { new: true })
       .exec();
     if (!updatedArticle) {
       throw new NotFoundException(`Article with ID ${id} not found`);
     }
+    
     //emit the event
     return updatedArticle;
   }

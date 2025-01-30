@@ -54,6 +54,9 @@ export class ArticleController {
 		return this.articleService.changeImage(article, file, index);
 	}
 
+	
+
+
 	@Delete("/:id/image/delete/:index?")
 	@UseGuards(JwtAuthGuard)
 	async deleteImage(
@@ -74,7 +77,7 @@ export class ArticleController {
 	}
 
 	@Get("find")
-async findMultiple(
+	async findMultiple(
   @Query("images", new DefaultValuePipe(true), new ParseBoolPipe())
   images: boolean,
   @Query("comments", new DefaultValuePipe(true), new ParseBoolPipe())
@@ -177,12 +180,15 @@ async findMultiple(
 	}
 
 	@Patch(":id")
+	@UseInterceptors(FilesInterceptor("images")) // Handle multiple image uploads
 	@UseGuards(JwtAuthGuard)
 	update(
 		@Param("id") id: string,
+		@UploadedFiles() images: Express.Multer.File[],
+
 		@Body() updateArticleDto: UpdateArticleDto
 	) {
-		return this.articleService.update(id, updateArticleDto);
+		return this.articleService.update(id, updateArticleDto,images);
 	}
 
 	@Delete(":id")
