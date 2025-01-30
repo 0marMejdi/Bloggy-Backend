@@ -211,7 +211,7 @@ export class ArticleService {
     images : Express.Multer.File[],
   ): Promise<Article> {
     //get the article
-    let encodedImages=null;
+    let encodedImages:string[]=[];
     if (images && images.length > 0) {
       try {
         // Encode each image to Base64 and store them in the article's `images` array
@@ -220,10 +220,9 @@ export class ArticleService {
         console.error('Error encoding images:', e);
       }
     }
-    let updateBody  : (UpdateArticleDto & {images?:string})  = {...updateArticleDto}
-    if (encodedImages){
-      updateBody.images = encodedImages;
-    }
+    let updateBody  : (UpdateArticleDto & {images?:string[]})  = {...updateArticleDto}
+    updateBody.images = encodedImages;
+
     const updatedArticle = await this.articleModel
       .findByIdAndUpdate(id, {...updateBody}, { new: true })
       .exec();
