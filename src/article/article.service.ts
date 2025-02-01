@@ -17,6 +17,8 @@ import { ImageService } from "../image/image.service";
 import { User } from "../users/entities/user.entity";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { find } from "rxjs";
+import { NotificationService } from "src/notification/notification.service";
+import { NotificationDto } from "src/notification/dto/notification.dto";
 
 
 require("dotenv").config();
@@ -26,6 +28,8 @@ const fs = require("fs").promises;
 export class ArticleService {
   constructor(
     @InjectModel("Article") private readonly articleModel: Model<Article>,
+    @InjectModel("User") private readonly userModel : Model<User>,
+    private readonly notificationService : NotificationService
   ) {}
 
 
@@ -303,7 +307,19 @@ export class ArticleService {
   }
   async vote(articleId: string, userId: string, action: 'upvote' | 'downvote') {
     const article = await this.articleModel.findById(articleId).lean().exec();
-  
+    const sender = await this.userModel.findById(userId).lean().exec();
+    const receiver  = await this.userModel.findById(article.owner).lean().exec();
+    function getAction(action){
+      return `the user ${sender.name} ${sender.lastName} (${sender.username}) has ${action} your article "${article.title}" at ${new Date().toLocaleString('fr-FR')})` ; 
+    }
+    let notifData : NotificationDto = {
+      articleId : article.id,
+      is_read : false,
+      message : "",
+      receiverId : article.owner,
+      senderId : userId,
+      url : ""
+    }
     if (!article) {
       throw new NotFoundException('Article not found');
     }
@@ -317,7 +333,8 @@ export class ArticleService {
 
     console.log("existingVote");
     console.log(existingVoteIndex);
-  
+    
+    
 
 
   
@@ -329,17 +346,20 @@ export class ArticleService {
           article.voters.push({ voterId: userId, vote: 'upvote' });
           article.upvotes += 1;
           console.log(`Article upvotes increased to: ${article.upvotes}`);
+          notifData.message = getAction('upvoted')
         } else {
           if (article.voters[existingVoteIndex].vote === 'upvote') {
             console.log('User already upvoted. Resetting the vote.');
             article.voters[existingVoteIndex].vote = null;
             article.upvotes -= 1;
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
+            notifData.message= getAction('canceled his vote');
           } else if (article.voters[existingVoteIndex].vote === null) {
             console.log('User had no previous vote. Changing to upvote.');
             article.voters[existingVoteIndex].vote = 'upvote';
             article.upvotes += 1;
             console.log(`Article upvotes increased to: ${article.upvotes}`);
+            notifData.message=getAction("upvoted")
           } else if (article.voters[existingVoteIndex].vote === 'downvote') {
             console.log('User previously downvoted. Switching to upvote.');
             article.voters[existingVoteIndex].vote = 'upvote';
@@ -347,6 +367,7 @@ export class ArticleService {
             article.upvotes += 1;
             console.log(`Article downvotes decreased to: ${article.downvotes}`);
             console.log(`Article upvotes increased to: ${article.upvotes}`);
+            notifData.message=getAction("changed his vote to upvote to")
           }
         }
         break;
@@ -358,17 +379,21 @@ export class ArticleService {
           article.voters.push({ voterId: userId, vote: 'downvote' });
           article.downvotes += 1;
           console.log(`Article downvotes increased to: ${article.downvotes}`);
+          notifData.message=getAction("downvoted")
+
         } else {
           if (article.voters[existingVoteIndex].vote === 'downvote') {
             console.log('User already downvoted. Resetting the vote.');
             article.voters[existingVoteIndex].vote = null;
             article.downvotes -= 1;
             console.log(`Article downvotes decreased to: ${article.downvotes}`);
+            notifData.message=getAction("has canceled his downvote to")
           } else if (article.voters[existingVoteIndex].vote === null) {
             console.log('User had no previous vote. Changing to downvote.');
             article.voters[existingVoteIndex].vote = 'downvote';
             article.downvotes += 1;
             console.log(`Article downvotes increased to: ${article.downvotes}`);
+            notifData.message=getAction("downvoted");
           } else if (article.voters[existingVoteIndex].vote === 'upvote') {
             console.log('User previously upvoted. Switching to downvote.');
             article.voters[existingVoteIndex].vote = 'downvote';
@@ -376,6 +401,8 @@ export class ArticleService {
             article.downvotes += 1;
             console.log(`Article upvotes decreased to: ${article.upvotes}`);
             console.log(`Article downvotes increased to: ${article.downvotes}`);
+            notifData.message=getAction("has switched his vote to downvote to")
+
           }
         }
         break;
@@ -388,7 +415,7 @@ export class ArticleService {
     console.log("article.voters");
     console.log(article.voters);
     article.voters=[...article.voters];
-    
+    this.notificationService.createNotification(notifData);
     await this.articleModel.findByIdAndDelete(articleId);
     return await this.articleModel.create(article);
   }
