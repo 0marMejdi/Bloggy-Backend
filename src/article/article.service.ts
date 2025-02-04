@@ -161,14 +161,15 @@ export class ArticleService {
     // only if it is comment then u notify 
     if (comment.fatherId){
       let father = await this.articleModel.findById(comment.fatherId).lean().exec();
-      let notifData : NotificationDto; 
+      let notifData : any={}; 
       notifData.articleId=comment.id;
-      notifData.receiverId=comment.owner;
+      notifData.receiverId=father.owner;
       notifData.is_read=false;
       notifData.senderId=senderId;
       // if the post i am adding a comment to a comment
       if (father.fatherId) {
-        notifData.message=`The person ${sender.name} ${sender.lastName} (${sender.username}) has replied to your comment "${comment.content.substring(0,15)} ${comment.content.length>15?'...':''}" to the post "${father.title}" at ${new Date().toLocaleString("fr-fr")}`
+        let fatherPoset = await this.articleModel.findById(father.fatherId).lean().exec()
+        notifData.message=`${sender.name} ${sender.lastName} has replied with "${comment.content.substring(0,15)}${comment.content.length>15?'...':''}" to your comment "${father.content.substring(0,15)} ${father.content.length>15?'...':''}" to the post "${fatherPoset.title}" at ${new Date().toLocaleString("fr-fr")}`
         this.sendCommentNotif(comment.fatherId,senderId);
       }else{
         notifData.message=`The person ${sender.name} ${sender.lastName} (${sender.username}) has commented on your post "${father.title}" at ${new Date().toLocaleString("fr-fr")}`
