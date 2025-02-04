@@ -30,6 +30,7 @@ import { memoryStorage } from "multer";
 import { Article } from "./entities/article.entity";
 import { Roles } from "../auth/roles/roles.decorator";
 import { ArticleByIdPipe } from "./pipe/article-by-id.pipe";
+import { NotificationDto } from "src/notification/dto/notification.dto";
 
 @ApiTags("article")
 //@Roles(['admin'])
@@ -120,6 +121,7 @@ export class ArticleController {
 			user.id,
 			images
 		);
+
 		return id;
 	}
 

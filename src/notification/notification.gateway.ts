@@ -32,7 +32,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
   }
 
   private async getUserFromToken(client: Socket): Promise<string | null> {
-    let token = client.handshake.headers.authorization;
+    let token = client.handshake.headers.authorization ?? client.handshake.query.authorization;
     if (!token) return null;
     if (Array.isArray(token)) token = token[0];
 

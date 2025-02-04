@@ -73,6 +73,7 @@ export class NotificationService {
             }else{
                 this.notificationGateway.server.to(receivers).emit('api', {...socketReponse, notif});
             }
+            // test to broadcast 
             // this.notificationGateway.server.emit('api', {...socketReponse, notif});
             
             const receiverId = notificationDto.receiverId;

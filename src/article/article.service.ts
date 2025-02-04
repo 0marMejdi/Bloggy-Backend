@@ -83,7 +83,7 @@ export class ArticleService {
       paginatedArticles = articles.slice(startIndex, endIndex);
   
     }
-    console.log(paginatedArticles);
+    // console.log(paginatedArticles);
     return paginatedArticles;
   }
   
@@ -149,12 +149,37 @@ export class ArticleService {
         console.error('Error encoding images:', e);
       }
     }
-
+        // it is a comment so we send notifications
+        this.sendCommentNotif(articleDocument.id,userId);
     return added;
   }
 
 
+  async sendCommentNotif(commentId,senderId){
+    let comment = await this.articleModel.findById(commentId).lean().exec()
+    let sender = await this.userModel.findById(senderId).lean().exec();
+    // only if it is comment then u notify 
+    if (comment.fatherId){
+      let father = await this.articleModel.findById(comment.fatherId).lean().exec();
+      let notifData : NotificationDto; 
+      notifData.articleId=comment.id;
+      notifData.receiverId=comment.owner;
+      notifData.is_read=false;
+      notifData.senderId=senderId;
+      // if the post i am adding a comment to a comment
+      if (father.fatherId) {
+        notifData.message=`The person ${sender.name} ${sender.lastName} (${sender.username}) has replied to your comment "${comment.content.substring(0,15)} ${comment.content.length>15?'...':''}" to the post "${father.title}" at ${new Date().toLocaleString("fr-fr")}`
+        this.sendCommentNotif(comment.fatherId,senderId);
+      }else{
+        notifData.message=`The person ${sender.name} ${sender.lastName} (${sender.username}) has commented on your post "${father.title}" at ${new Date().toLocaleString("fr-fr")}`
+      }
+      if (senderId!==comment.owner){
+        this.notificationService.createNotification(notifData);
+      }
+      
+    }
 
+  }
 
   async addImage(article: Article, imageFile: Express.Multer.File) {
     // Encode the image file into Base64 format
@@ -310,7 +335,7 @@ export class ArticleService {
     const sender = await this.userModel.findById(userId).lean().exec();
     const receiver  = await this.userModel.findById(article.owner).lean().exec();
     function getAction(action){
-      return `the user ${sender.name} ${sender.lastName} (${sender.username}) has ${action} your article "${article.title}" at ${new Date().toLocaleString('fr-FR')})` ; 
+      return `the user ${sender.name} ${sender.lastName} (${sender.username}) has ${action} your article "${article.title}" at ${new Date().toLocaleString('fr-FR')}` ; 
     }
     let notifData : NotificationDto = {
       articleId : article.id,
@@ -326,13 +351,13 @@ export class ArticleService {
   
     // Find the existing vote of the user in the voters array
     const existingVoteIndex = article.voters.findIndex((vote) => vote.voterId === userId);
-    console.log("article");
-    console.log(article);
-    console.log("article.voters");
-    console.log(article.voters);
+    // console.log("article");
+    // console.log(article);
+    // console.log("article.voters");
+    // console.log(article.voters);
 
-    console.log("existingVote");
-    console.log(existingVoteIndex);
+    // console.log("existingVote");
+    // console.log(existingVoteIndex);
     
     
 
@@ -415,7 +440,9 @@ export class ArticleService {
     console.log("article.voters");
     console.log(article.voters);
     article.voters=[...article.voters];
-    this.notificationService.createNotification(notifData);
+    // send notification if only user who voted is not the same user who owns the post
+    if (notifData.receiverId!==notifData.senderId)
+      this.notificationService.createNotification(notifData);
     await this.articleModel.findByIdAndDelete(articleId);
     return await this.articleModel.create(article);
   }
